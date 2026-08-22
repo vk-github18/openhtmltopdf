@@ -14,6 +14,7 @@ import com.openhtmltopdf.util.LogMessageId;
 import com.openhtmltopdf.util.OpenUtil;
 import com.openhtmltopdf.util.XRLog;
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.GlyphLayoutProcessorInterface;
 
 import java.awt.*;
 import java.io.Closeable;
@@ -241,6 +242,76 @@ public class PdfRendererBuilder extends BaseRendererBuilder<PdfRendererBuilder, 
     }
 
     /**
+     * Enable PDFBox GlyphLayoutProcessor for proper handling of complex Unicode text.
+     *
+     * When enabled, PDFBox will use the GlyphLayoutProcessor to:
+     * - Process combining diacritical marks with proper positioning
+     * - Perform glyph substitutions (ligatures, contextual forms)
+     * - Apply OpenType font features (GSUB/GPOS tables)
+     * - Handle proper kerning and baseline adjustments
+     * - Support bidirectional text with correct glyph reordering
+     *
+     * The GlyphLayoutProcessor automatically selects an appropriate implementation:
+     * - GlyphLayoutProcessorAwt (using Java 2D font layout engine)
+     * - GlyphLayoutProcessorFop (using Apache FOP font layout engine)
+     *
+     * Requires pdfbox-layout-awt or pdfbox-layout-fop on the classpath.
+     *
+     * @param glyphLayoutProcessor the GlyphLayoutProcessor instance to use, or null to disable
+     * @return this for method chaining
+     */
+    public PdfRendererBuilder useGlyphLayoutProcessor(GlyphLayoutProcessorInterface glyphLayoutProcessor) {
+        state._glyphLayoutProcessor = glyphLayoutProcessor;
+        return this;
+    }
+
+    /**
+     * Enable PDFBox GlyphLayoutProcessor for proper handling of complex Unicode text.
+     *
+     * Attempts to automatically load a GlyphLayoutProcessor implementation from the classpath.
+     * First tries GlyphLayoutProcessorAwt, then falls back to GlyphLayoutProcessorFop.
+     *
+     * @return this for method chaining
+     * @throws IllegalStateException if no GlyphLayoutProcessor implementation is available
+     */
+    public PdfRendererBuilder useGlyphLayoutProcessor() {
+        // Try to load GlyphLayoutProcessorAwt
+        try {
+            Class<?> glyphProcessorClass = Class.forName(
+                "org.apache.pdfbox.glyphlayout.awt.GlyphLayoutProcessorAwt");
+            GlyphLayoutProcessorInterface processor = 
+                (GlyphLayoutProcessorInterface) glyphProcessorClass.getDeclaredConstructor().newInstance();
+            state._glyphLayoutProcessor = processor;
+            XRLog.log(Level.INFO, LogMessageId.LogMessageId0Param.GENERAL_PDF_USING_FAST_MODE, 
+                "GlyphLayoutProcessorAwt loaded and enabled");
+            return this;
+        } catch (ClassNotFoundException e) {
+            // Try FOP implementation
+        } catch (Exception e) {
+            XRLog.log(Level.WARNING, "Failed to load GlyphLayoutProcessorAwt: " + e.getMessage());
+        }
+
+        // Try to load GlyphLayoutProcessorFop
+        try {
+            Class<?> glyphProcessorClass = Class.forName(
+                "org.apache.pdfbox.glyphlayout.fop.GlyphLayoutProcessorFop");
+            GlyphLayoutProcessorInterface processor = 
+                (GlyphLayoutProcessorInterface) glyphProcessorClass.getDeclaredConstructor().newInstance();
+            state._glyphLayoutProcessor = processor;
+            XRLog.log(Level.INFO, LogMessageId.LogMessageId0Param.GENERAL_PDF_USING_FAST_MODE,
+                "GlyphLayoutProcessorFop loaded and enabled");
+            return this;
+        } catch (ClassNotFoundException e) {
+            throw new IllegalStateException(
+                "GlyphLayoutProcessor not found on classpath. " +
+                "Add pdfbox-layout-awt or pdfbox-layout-fop dependency.", e);
+        } catch (Exception e) {
+            throw new IllegalStateException(
+                "Failed to load GlyphLayoutProcessor: " + e.getMessage(), e);
+        }
+    }
+
+    /**
      * Like {@link BaseRendererBuilder#useFont(FSSupplier, String, Integer, FontStyle, boolean)} but
      * allows to supply a PDFont directly. Subclass {@link PDFontSupplier} if you need
      * special font-loading rules (like using a font-cache).
@@ -359,4 +430,3 @@ public class PdfRendererBuilder extends BaseRendererBuilder<PdfRendererBuilder, 
         }
     }
 }
-
