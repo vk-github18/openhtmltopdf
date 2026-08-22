@@ -31,4 +31,7 @@ public class PdfRendererBuilderState extends BaseRendererBuilder.BaseRendererBui
 	public byte[] _colorProfile;
 	public PageSupplier _pageSupplier;
 	public NamespaceHandler _namespaceHandler;
+
+	/* Glyph layout provider, optional */
+	public GlyphLayoutProvider _glyphLayoutProvider;
 }
