@@ -537,6 +537,7 @@ public class PdfBoxRenderer implements Closeable, PageSupplier {
         PDPage page = _pageSupplier.requestPage(doc, w, h, mainPageIndex, shadowPageIndex);
 
         PDPageContentStream cs = new PDPageContentStream(doc, page, AppendMode.APPEND, !_testMode);
+        cs.setLayoutProcessor(state._layoutProcessor);
 
         _outputDevice.initializePage(cs, page, h);
         
