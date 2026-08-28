@@ -143,7 +143,7 @@ public class PdfBoxRenderer implements Closeable, PageSupplier {
     /**
      * This method is constantly changing as options are added to the builder.
      */
-    PdfBoxRenderer(
+    protected PdfBoxRenderer(
             BaseDocument doc,
             UnicodeImplementation unicode,
             PageDimensions pageSize,
@@ -296,9 +296,6 @@ public class PdfBoxRenderer implements Closeable, PageSupplier {
 
             throw e;
         }
-    }
-
-    public PdfBoxRenderer() {
     }
 
     public Document getDocument() {

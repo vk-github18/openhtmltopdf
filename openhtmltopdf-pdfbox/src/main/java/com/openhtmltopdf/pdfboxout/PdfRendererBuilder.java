@@ -26,7 +26,11 @@ import java.util.logging.Level;
 public class PdfRendererBuilder extends BaseRendererBuilder<PdfRendererBuilder, PdfRendererBuilderState> {
 
     public PdfRendererBuilder() {
-        super(new PdfRendererBuilderState());
+        this(new PdfRendererBuilderState());
+    }
+
+    public PdfRendererBuilder(PdfRendererBuilderState pdfRendererBuilderState) {
+        super(pdfRendererBuilderState);
 
         for (CacheStore cacheStore : CacheStore.values()) {
             // Use the flyweight pattern to initialize all caches with a no-op implementation to
