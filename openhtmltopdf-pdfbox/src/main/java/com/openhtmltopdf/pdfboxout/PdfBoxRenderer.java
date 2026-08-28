@@ -298,6 +298,9 @@ public class PdfBoxRenderer implements Closeable, PageSupplier {
         }
     }
 
+    public PdfBoxRenderer() {
+    }
+
     public Document getDocument() {
         return _doc;
     }
@@ -531,13 +534,12 @@ public class PdfBoxRenderer implements Closeable, PageSupplier {
         }
     }
 
-    private PDPageContentStream initPage(
+    protected PDPageContentStream initPage(
             PDDocument doc, float w, float h, int mainPageIndex, int shadowPageIndex) throws IOException {
 
         PDPage page = _pageSupplier.requestPage(doc, w, h, mainPageIndex, shadowPageIndex);
 
         PDPageContentStream cs = new PDPageContentStream(doc, page, AppendMode.APPEND, !_testMode);
-        cs.setLayoutProcessor(state._layoutProcessor);
 
         _outputDevice.initializePage(cs, page, h);
         

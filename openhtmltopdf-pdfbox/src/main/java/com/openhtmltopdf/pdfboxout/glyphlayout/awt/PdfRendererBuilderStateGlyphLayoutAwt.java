@@ -1,4 +1,11 @@
 package com.openhtmltopdf.pdfboxout.glyphlayout.awt;
 
-public class PdfRendererBuilderStateGlyphLayoutAwt {
+import com.openhtmltopdf.pdfboxout.PdfRendererBuilderState;
+
+public class PdfRendererBuilderStateGlyphLayoutAwt extends PdfRendererBuilderState {
+    public GlyphLayoutProcessorInterface glyphLayoutProcessor;
+
+    PdfRendererBuilderStateGlyphLayoutAwt() {
+        super();
+    }
 }

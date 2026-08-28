@@ -18,7 +18,7 @@ import java.util.Map;
  */
 public class PdfRendererBuilderState extends BaseRendererBuilder.BaseRendererBuilderState {
 	/* Internal! */
-	PdfRendererBuilderState() {
+	protected PdfRendererBuilderState() {
 	}
 
 	public OutputStream _os;
