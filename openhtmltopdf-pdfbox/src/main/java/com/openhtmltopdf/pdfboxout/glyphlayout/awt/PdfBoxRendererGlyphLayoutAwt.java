@@ -10,6 +10,9 @@ import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import java.io.Closeable;
 import java.io.IOException;
 
+/**
+ *
+ */
 public class PdfBoxRendererGlyphLayoutAwt extends PdfBoxRenderer {
     PdfRendererBuilderStateGlyphLayoutAwt state;
 
@@ -25,6 +28,4 @@ public class PdfBoxRendererGlyphLayoutAwt extends PdfBoxRenderer {
         cs.setGlyphLayoutProcessor(state._glyphLayoutProcessor);
         return cs;
     }
-
-
 }
