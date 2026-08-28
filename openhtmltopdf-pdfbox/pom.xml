@@ -78,8 +78,24 @@
         </dependency>
         <dependency>
             <groupId>org.apache.pdfbox</groupId>
+            <artifactId>fontbox</artifactId>
+            <version>4.0.0-SNAPSHOT</version>
+            <scope>system</scope>
+            <systemPath>/data10/pdfbox/fontbox/target/fontbox-4.0.0-SNAPSHOT.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.pdfbox</groupId>
+            <artifactId>io</artifactId>
+            <version>4.0.0-SNAPSHOT</version>
+            <scope>system</scope>
+            <systemPath>/data10/pdfbox/io/target/pdfbox-io-4.0.0-SNAPSHOT.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.pdfbox</groupId>
             <artifactId>xmpbox</artifactId>
-            <version>${pdfbox.version}</version>
+            <version>4.0.0-SNAPSHOT</version>
+            <scope>system</scope>
+            <systemPath>/data10/pdfbox/xmpbox/target/xmpbox-4.0.0-SNAPSHOT.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>io.github.openhtmltopdf</groupId>
