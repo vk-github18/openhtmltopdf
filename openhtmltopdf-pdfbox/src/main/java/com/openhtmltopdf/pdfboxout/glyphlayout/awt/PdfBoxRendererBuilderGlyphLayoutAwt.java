@@ -61,18 +61,11 @@ public class PdfBoxRendererBuilderGlyphLayoutAwt extends PdfRendererBuilder {
 
         BaseDocument doc = new BaseDocument(state._baseUri, state._html, state._document, state._file, state._uri);
 
-        PdfBoxRendererGlyphLayoutAwt renderer = new PdfBoxRendererGlyphLayoutAwt(doc, unicode, pageSize, state, diagnosticConsumer);
 
-        try {
-            PdfBoxFontResolver resolver = renderer.getFontResolver();
-            //TODO Fonts holen.
+        PdfBoxRendererGlyphLayoutAwt glyphLayoutRenderer = new PdfBoxRendererGlyphLayoutAwt(doc, unicode, pageSize, state, diagnosticConsumer);
+        PdfBoxRenderer ignore = super.buildPdfRenderer(diagnosticConsumer);
 
-        } catch (Throwable e) {
-            OpenUtil.closeQuietly(renderer);
-            throw e;
-        }
-
-        return renderer;
+        return glyphLayoutRenderer;
     }
 
 }

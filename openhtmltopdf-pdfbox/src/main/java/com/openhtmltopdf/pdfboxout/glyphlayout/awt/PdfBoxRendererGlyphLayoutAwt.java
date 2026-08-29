@@ -21,6 +21,8 @@ public class PdfBoxRendererGlyphLayoutAwt extends PdfBoxRenderer {
         this.state = state;
     }
 
+
+    @Override
     protected PDPageContentStream initPage(
             PDDocument doc, float w, float h, int mainPageIndex, int shadowPageIndex) throws IOException {
 
