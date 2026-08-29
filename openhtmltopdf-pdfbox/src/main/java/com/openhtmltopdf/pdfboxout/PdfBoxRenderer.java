@@ -140,6 +140,8 @@ public class PdfBoxRenderer implements Closeable, PageSupplier {
 
     private final int _initialPageNumber;
 
+    private GlyphLayoutProcessorInterface _glyphLayoutProcessor;
+
     /**
      * This method is constantly changing as options are added to the builder.
      */
@@ -172,6 +174,8 @@ public class PdfBoxRenderer implements Closeable, PageSupplier {
             _colorProfile = state._colorProfile;
 
             _hyphenator = state._hyphenator;
+
+            _glyphLayoutProcessor = state._glyphLayoutProcessor;
 
             _dotsPerPoint = DEFAULT_DOTS_PER_POINT;
             _testMode = state._testMode;
@@ -537,6 +541,7 @@ public class PdfBoxRenderer implements Closeable, PageSupplier {
         PDPage page = _pageSupplier.requestPage(doc, w, h, mainPageIndex, shadowPageIndex);
 
         PDPageContentStream cs = new PDPageContentStream(doc, page, AppendMode.APPEND, !_testMode);
+        cs.setGlyphLayoutProcessor(_glyphLayoutProcessor);
 
         _outputDevice.initializePage(cs, page, h);
         

@@ -31,9 +31,8 @@ public class PdfBoxGlyphLayoutExample {
 
             PDFont arimo = glyphLayoutProcessor.loadFont(doc, this.getClass().getResourceAsStream("/fonts/arimo/Arimo-Regular.ttf"));
 
-//            PdfBoxRendererBuilderGlyphLayoutAwt builder = new PdfBoxRendererBuilderGlyphLayoutAwt();
-//            builder.useGlyphLayoutProcessor(glyphLayoutProcessor);
             PdfRendererBuilder builder = new PdfRendererBuilder();
+            builder.useGlyphLayoutProcessor(glyphLayoutProcessor);
 
             // Load example HTML from resources
             InputStream is = PdfBoxGlyphLayoutExample.class.getResourceAsStream("/glyphlayout/GlyphLayoutExample.html");
