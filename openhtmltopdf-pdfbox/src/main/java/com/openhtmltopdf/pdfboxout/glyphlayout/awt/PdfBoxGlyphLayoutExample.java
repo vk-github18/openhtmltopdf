@@ -16,7 +16,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
 /**
+ * Example for PDFBox GlyphLayoutProcessor for correct glyph layout
  *
+ * @author Volker Kunert
  */
 public class PdfBoxGlyphLayoutExample {
     public static void main(String[] args) throws Exception {

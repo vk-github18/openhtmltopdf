@@ -1,6 +1,7 @@
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
   <meta charset="utf-8"/>
+  <meta name="author" content="Volker Kunert">
   <style>
     @page {
       size: A4;
@@ -11,18 +12,18 @@
       font-size: 12pt;
     }
   </style>
-  <title>Letters from DIN 91379 with OpenPDF-html</title>
+  <title>Letters from DIN 91379 with OpenHTMLtoPDF and GlyphLayoutProcessorAwt</title>
 </head>
 <body>
-<h1>Letters from DIN 91379 with OpenPDF-html</h1>
+<h1>Letters from DIN 91379 with <a href="https://github.com/openhtmltopdf/openhtmltopdf">OpenHTMLtoPDF</a> and GlyphLayoutProcessorAwt</h1>
 
 The list of letters from <a href="https://en.wikipedia.org/wiki/DIN_91379">DIN 91379</a> (see
-<a href="https://github.com/String-Latin/DIN-91379-Characters-and-Sequences/blob/main/latin_letters_1.3.txt">
-  latin_letters_1.3.txt</a>) is rendered with <a
-    href="https://github.com/LibrePDF/OpenPDF/tree/master/openpdf-html">OpenPDF-html</a> using
-  <a href="https://github.com/LibrePDF/OpenPDF/wiki/Accents,-DIN-91379,-non-Latin-scripts">GlyphLayoutManager</a> and
-the
-  <a href="https://github.com/googlefonts/Arimo">Arimo</a> font.
+<a href="https://github.com/String-Latin/DIN-91379-Characters-and-Sequences/">  DIN-91379-Characters-and-Sequences</a>)
+is rendered with <a href="https://github.com/openhtmltopdf/openhtmltopdf">OpenHTMLtoPDF</a>
+using  <a href="https://github.com/apache/pdfbox/pdfbox-layout-awt/src/main/java/org/apache/pdfbox/glyphlayout/awt/GlyphLayoutProcessorAwt.java">GlyphLayoutProcessorAwt</a>
+from <a href="https://github.com/apache/pdfbox">Apache PDFBox since 3.09 and 4.0</a>
+in the module <a href="https://github.com/apache/pdfbox/tree/trunk/pdfbox-layout-awt">pdfbox-layout-awt</a>
+and the <a href="https://github.com/googlefonts/Arimo">Arimo</a> font.
 
 <h2>bll; Latin Letters (normative)</h2>
 A B C D E F G H I J K L M N O P Q R S T U V W X Y Z
