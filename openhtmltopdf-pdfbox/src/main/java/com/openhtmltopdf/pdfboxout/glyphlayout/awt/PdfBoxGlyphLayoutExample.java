@@ -23,20 +23,19 @@ public class PdfBoxGlyphLayoutExample {
     }
 
     public void run() throws IOException, FontFormatException {
-        File out = new File("target/GlyphLayoutHtmlExample.pdf");
-        out.getParentFile().mkdirs();
+        File out = new File("GlyphLayoutHtmlExample.pdf");
 
         try (PDDocument doc = new PDDocument()) {
             GlyphLayoutProcessorAwt glyphLayoutProcessor = new GlyphLayoutProcessorAwt();
 
-            PDFont arimo = glyphLayoutProcessor.loadFont(doc, this.getClass().getResourceAsStream("src/main/resources/fonts/arimo/Arimo-Regular.ttf"));
+            PDFont arimo = glyphLayoutProcessor.loadFont(doc, this.getClass().getResourceAsStream("/fonts/arimo/Arimo-Regular.ttf"));
 
             PdfBoxRendererBuilderGlyphLayoutAwt builder = new PdfBoxRendererBuilderGlyphLayoutAwt();
             builder.useGlyphLayoutProcessor(glyphLayoutProcessor);
 
             // Load example HTML from resources
-            InputStream is = PdfBoxGlyphLayoutExample.class.getResourceAsStream("/org/openpdf/pdf/GlyphLayoutExample.html");
-            Objects.requireNonNull(is, "Could not find GlyphLayoutHtmlExample.html resource");
+            InputStream is = PdfBoxGlyphLayoutExample.class.getResourceAsStream("/glyphlayout/GlyphLayoutExample.html");
+            Objects.requireNonNull(is, "Could not find GlyphLayoutExample.html resource");
 
 
             String html = new String(IOUtils.toByteArray(is), StandardCharsets.UTF_8);
