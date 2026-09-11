@@ -308,15 +308,24 @@ public class TableCellBox extends BlockBox {
     }
 
     /**
-     * Adjusts the bounds of a rowspan cell on continuation pages to avoid overlapping with thead.
-     * For rowspan cells that span multiple pages, this ensures the cell's rendering starts
-     * after the thead section on subsequent pages.
+     * Adjusts the bounds of a body rowspan cell on continuation pages to avoid overlapping
+     * with thead. For rowspan cells that span multiple pages, this ensures the cell's
+     * rendering starts after the thead section on subsequent pages.
      *
      * @return adjusted bounds that don't overlap with thead, or the original bounds if no adjustment needed
      */
     private Rectangle adjustBoundsToAvoidTheadOverlap(RenderingContext c, Rectangle bounds) {
         // Only adjust for rowspan cells on subsequent pages
         if (bounds == null || getStyle().getRowSpan() <= 1) {
+            return bounds;
+        }
+
+        // A cell of the header (or the footer) is repositioned for every page it repeats
+        // on, so its bounds are already page local and never content limited. A header
+        // cell spanning the header rows starts at the top of the header, which would
+        // otherwise be clipped away as an overlap with the header itself.
+        TableSectionBox section = getSection();
+        if (section.isHeader() || section.isFooter()) {
             return bounds;
         }
 
@@ -408,8 +417,16 @@ public class TableCellBox extends BlockBox {
         }
         
         ContentLimitContainer contentLimitContainer = ((TableRowBox)getParent()).getContentLimitContainer();
+
+        // Null when the row was never page break analyzed, which happens when the table was laid
+        // out with pagination off (for example inside a multi-column container) but is painted
+        // with it on. Such a table doesn't straddle a page break, so the plain border edge holds.
+        if (contentLimitContainer == null) {
+            return result;
+        }
+
         ContentLimit limit = contentLimitContainer.getContentLimit(c.getPageNo());
-        
+
         if (limit == null) {
             return null;
         } else {
@@ -987,7 +1004,12 @@ public class TableCellBox extends BlockBox {
             return result;
         }
         
-        return c.isPrint() && getTable().getStyle().isPaginateTable() &&
-                ((TableRowBox)getParent()).getContentLimitContainer().isContainsMultiplePages();
+        if (!c.isPrint() || !getTable().getStyle().isPaginateTable()) {
+            return false;
+        }
+
+        ContentLimitContainer contentLimitContainer = ((TableRowBox)getParent()).getContentLimitContainer();
+
+        return contentLimitContainer != null && contentLimitContainer.isContainsMultiplePages();
     }
 }

@@ -243,9 +243,9 @@ public class LineBox extends Box implements InlinePaintable {
     }
     
     public void justify(CssContext c) {
-        if (getParent().getStyle().hasLetterSpacing()) {
-            // Do nothing, letter-spacing turns off text justification.
-        } else if (!isLastLineWithContent() && !isEndsOnNL()) {
+        // NOTE: letter-spacing and word-spacing are already part of the content
+        // width, so what we distribute here is whatever room is left over.
+        if (!isLastLineWithContent() && !isEndsOnNL()) {
             int leftFloatDistance = getFloatDistances().getLeftFloatDistance();
             int rightFloatDistance = getFloatDistances().getRightFloatDistance();
             
@@ -671,13 +671,14 @@ public class LineBox extends Box implements InlinePaintable {
                 overflowsPage = greatestAbsY >= pageBox.getBottom(c) - c.getExtraSpaceBottom();
             }
 
-            boolean tooBig = (greatestAbsY - leastAbsY) > pageBox.getContentHeight(c);
+            boolean tooBig = isTallerThanPage(c, pageBox, greatestAbsY - leastAbsY, 0, 0);
             boolean needsPageBreak = alwaysBreak || (overflowsPage && !tooBig); 
 
            if (needsPageBreak) {
                beforeChangePage(c);
 
-               forcePageBreakBefore(c, IdentValue.ALWAYS, false, leastAbsY);
+               // Not a break from the style - we are moving this line ourselves.
+               forcePageBreakBefore(c, IdentValue.ALWAYS, false, leastAbsY, false);
                calcCanvasLocation();
 
                checkFootnoteReservedPage(c, c.getRootLayer().getFirstPage(c, this), false);

@@ -137,6 +137,15 @@ abstract class Condition {
     static Condition createFirstChildCondition() {
         return new FirstChildCondition();
     }
+
+    /**
+     * the CSS condition that element has pseudo-class :root (the document root)
+     *
+     * @return Returns
+     */
+    static Condition createRootCondition() {
+        return new RootCondition();
+    }
     
     /**
      * the CSS condition that element has pseudo-class :last-child
@@ -489,6 +498,23 @@ abstract class Condition {
             sb.append(":first-child");
         }
     }
+
+    private static class RootCondition extends Condition {
+
+        RootCondition() {
+        }
+
+        @Override
+        boolean matches(Object e, AttributeResolver attRes, TreeResolver treeRes) {
+            // The root element is the one without a parent element.
+            return treeRes.getParentElement(e) == null;
+        }
+
+        @Override
+        void toCSS(StringBuilder sb) {
+            sb.append(":root");
+        }
+    }
     
     private static class LastChildCondition extends Condition {
 
@@ -529,11 +555,21 @@ abstract class Condition {
 
             if (a == 0) {
                 return position == 0;
-            } else if ((a < 0) && (position > 0)) {
-                return false; // n is negative
-            } else {
-                return position % a == 0;
             }
+
+            // An element at 1-based position p matches :nth-child(an+b) if there
+            // is a non-negative integer n such that p == a*n + b, i.e.
+            // n == (p - b) / a. So position (== p - b) must be evenly divisible
+            // by a AND the resulting n must not be negative.
+            //
+            // Previously only the divisibility check was performed, which meant
+            // that for a == 1 (e.g. ":nth-child(n+3)") *every* position matched,
+            // since anything is divisible by 1. See GitHub issue #113.
+            if (position % a != 0) {
+                return false;
+            }
+
+            return position / a >= 0;
         }
 
         @Override
