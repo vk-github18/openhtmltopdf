@@ -762,6 +762,16 @@ public abstract class Box implements Styleable, DisplayListItem {
     }
 
     public int forcePageBreakBefore(LayoutContext c, IdentValue pageBreakValue, boolean pendingPageName, int absY) {
+        return forcePageBreakBefore(c, pageBreakValue, pendingPageName, absY, true);
+    }
+
+    /**
+     * @param fromStyle whether <code>pageBreakValue</code> is the box's own
+     * <code>page-break-before</code>, rather than a break we are taking for our own
+     * reasons and passing {@link IdentValue#ALWAYS} to get. Only a break that really
+     * comes from the style counts as forced for margin truncation.
+     */
+    protected int forcePageBreakBefore(LayoutContext c, IdentValue pageBreakValue, boolean pendingPageName, int absY, boolean fromStyle) {
         PageBox page = c.getRootLayer().getFirstPage(c, absY);
         if (page == null) {
             XRLog.log(Level.WARNING, LogMessageId.LogMessageId0Param.LAYOUT_BOX_HAS_NO_PAGE);
@@ -809,6 +819,15 @@ public abstract class Box implements Styleable, DisplayListItem {
 
             setY(getY() + delta);
 
+            if (fromStyle &&
+                (pageBreakValue == IdentValue.ALWAYS ||
+                 pageBreakValue == IdentValue.LEFT ||
+                 pageBreakValue == IdentValue.RIGHT)) {
+                // The box now starts at the top of the page following the one it
+                // was on, so a margin of its own adjoins a forced break.
+                c.getRootLayer().addPageStartedByForcedBreak(page.getBottom());
+            }
+
             return delta;
         }
     }
@@ -843,7 +862,28 @@ public abstract class Box implements Styleable, DisplayListItem {
             }
 
             setHeight(getHeight() + delta);
+
+            // Whatever follows starts at the top of the next page, and its margin
+            // adjoins this forced break.
+            c.getRootLayer().addPageStartedByForcedBreak(page.getBottom());
         }
+    }
+
+    /**
+     * Whether a run of content this tall could never sit on a page of its own, so that
+     * moving it to the next page cannot save it from being split. A constraint that asks
+     * for the move -- page-break-inside: avoid, keeping a table head with its first row --
+     * cannot be satisfied by one, and honouring it only strands the space this page had.
+     * <br><br>
+     * The budget is the usable page, which excludes any area reserved for footnotes, less
+     * whatever a continuation page repeats above and below the content.
+     *
+     * @param reservedTop space repeated above the content, such as a running table header
+     * @param reservedBottom the same below it
+     */
+    protected static boolean isTallerThanPage(
+            CssContext c, PageBox page, int height, int reservedTop, int reservedBottom) {
+        return height > page.getBottom(c) - page.getTop() - reservedTop - reservedBottom;
     }
 
     /**
